@@ -1,0 +1,28 @@
+cabal-version:      2.4
+name:               lens-tell
+version:            0.1.0.0
+synopsis:
+
+-- A longer description of the package.
+-- description:
+homepage:
+
+-- A URL where users can report bugs.
+-- bug-reports:
+license:            BSD-3-Clause
+license-file:       LICENSE
+author:             Isaac Elliott
+maintainer:         isaace71295@gmail.com
+
+-- A copyright notice.
+-- copyright:
+category:           Control
+extra-source-files: CHANGELOG.md
+
+library
+    exposed-modules:  Control.Monad.Tell.Lens
+    build-depends:    base >=4.14.1.0 && <5
+                    , lens
+                    , tell
+    hs-source-dirs:   src
+    default-language: Haskell2010
