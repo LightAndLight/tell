@@ -1,6 +1,6 @@
 cabal-version:      2.4
 name:               tell
-version:            0.1.0.0
+version:            0.1
 synopsis:           The MonadTell class and related monad transformers.
 
 description:        
