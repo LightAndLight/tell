@@ -36,25 +36,28 @@ import qualified Control.Monad.Writer.Class as Writer.Class
 
 {- |
 
-Laws:
+== Laws
 
 @tell mempty ≡ pure ()@
 
 @tell (a <> b) ≡ tell a *> tell b@
 
-Comparison with 'MonadWriter':
+== How does this related to 'MonadWriter'?
 
 'MonadTell' is a generalisation of 'MonadWriter'. It only provides 'tell';
-a function that \'appends\' a monoidal value to some output.
+a function that \'appends\' a monoidal value to some output. Morally, we have
+@class 'MonadTell' w m => 'MonadWriter' w m where ...@. See 'WrappedMonadWriter'
+for the witness of this.
 
-'MonadWriter'\'s 'listen' and 'pass' functions require the monad to hold onto
+'MonadWriter'\'s 'Control.Monad.Writer.Class.listen' and 'Control.Monad.Writer.Class.pass'
+functions require the monad to hold onto
 the output for an arbitrarily long time. This can cause applications to use memory
-linear in the size of the output, when constant memory usage would suffice.
+linear in the number of 'Control.Monad.Writer.tell's, when constant memory usage would suffice.
 
 A motivating example is writing monoidal results to a file. Using 'MonadWriter'
-(via 'WriterT'), you would have to accumulate the results and then write them
+(via a @WriterT@), you would have to accumulate the the entire output and then write it
 to the file. In contrast, 'MonadTell' allows you to write each result to the file
-as it's obtained, allowing the result to be freed as the rest of the program runs.
+as it's obtained, allowing the result to be freed while the rest of the program runs.
 -}
 class (Monoid w, Monad m) => MonadTell w m | m -> w where
   tell :: w -> m ()

@@ -9,7 +9,11 @@
  License     :  BSD-3 (see the file LICENSE)
  Maintainer  :  Isaac Elliott <isaace71295@gmail.com>
 -}
-module Control.Monad.Trans.HandleWriter (Env (..), HandleWriterT (..), runHandleWriterT) where
+module Control.Monad.Trans.HandleWriter (
+  HandleWriterT (..),
+  Env (..),
+  runHandleWriterT,
+) where
 
 import Control.Monad.Cont.Class (MonadCont)
 import Control.Monad.Error.Class (MonadError)
