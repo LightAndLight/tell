@@ -1,0 +1,39 @@
+#! /usr/bin/env python3
+
+import os
+import shutil
+import subprocess
+import sys
+
+def make_package_tarball_path(package, version):
+    return package + "-" + version + ".tar.gz"
+
+packages = [ "tell", "lens-tell" ]
+version = sys.argv[1]
+
+cwd = os.getcwd()
+sdist_path = os.path.join(cwd, "dist-newstyle", "sdist")
+
+if os.path.exists(sdist_path):
+    shutil.rmtree(sdist_path)
+
+print("Running `cabal new-sdist`...", file=sys.stderr)
+subprocess.run(
+    ["cabal", "new-sdist", "--verbose=0"] + packages, 
+    check=True
+)
+
+package_tarball_paths = [ 
+    os.path.join(sdist_path, make_package_tarball_path(package, version)) 
+    for package in packages 
+]
+
+for path in package_tarball_paths:
+    assert os.path.exists(path), "missing package tarball {}".format(path)
+
+print("Running `cabal upload`...", file=sys.stderr)
+subprocess.run(
+    ["cabal", "upload"] + 
+    package_tarball_paths, 
+    check=True
+)
