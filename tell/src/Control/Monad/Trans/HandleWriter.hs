@@ -11,8 +11,8 @@
 -}
 module Control.Monad.Trans.HandleWriter (
   HandleWriterT (..),
-  Env (..),
   runHandleWriterT,
+  Env (..),
 ) where
 
 import Control.Monad.Cont.Class (MonadCont)
@@ -57,5 +57,11 @@ instance (Monoid w, MonadIO m) => MonadTell w (HandleWriterT w m) where
       Env handle f <- ask
       liftIO $ f handle w
 
-runHandleWriterT :: Handle -> (Handle -> w -> IO ()) -> HandleWriterT w m a -> m a
+runHandleWriterT ::
+  -- | Target file handle
+  Handle ->
+  -- | The function that will write to the file handle
+  (Handle -> w -> IO ()) ->
+  HandleWriterT w m a ->
+  m a
 runHandleWriterT handle f = flip runReaderT (Env handle f) . unHandleWriterT
