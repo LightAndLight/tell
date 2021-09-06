@@ -8,8 +8,15 @@ import sys
 def make_package_tarball_path(package, version):
     return package + "-" + version + ".tar.gz"
 
+def make_docs_tarball_path(package, version):
+    return package + "-" + version + "-docs.tar.gz"
+
 packages = [ "tell", "lens-tell" ]
 version = sys.argv[1]
+try:
+    publish = sys.argv[2] == "--publish"
+except Exception as e:
+    publish = False
 
 cwd = os.getcwd()
 sdist_path = os.path.join(cwd, "dist-newstyle", "sdist")
@@ -33,7 +40,28 @@ for path in package_tarball_paths:
 
 print("Running `cabal upload`...", file=sys.stderr)
 subprocess.run(
-    ["cabal", "upload"] + 
-    package_tarball_paths, 
+    ["cabal", "upload"] + package_tarball_paths + (["--publish"] if publish else []), 
     check=True
 )
+
+if not publish:
+    print("Running `cabal new-haddock all`...", file=sys.stderr)
+    subprocess.run(
+        ["cabal", "new-haddock", "all", "--haddock-for-hackage", "--enable-doc"],
+        check=True
+    )
+
+    docs_path = os.path.join(cwd, "dist-newstyle")
+
+    docs_tarball_paths = [ 
+        os.path.join(docs_path, make_docs_tarball_path(package, version)) 
+        for package in packages 
+    ]
+
+    print("Running `cabal upload -d`...", file=sys.stderr)
+    for path in docs_tarball_paths:
+        assert os.path.exists(path), "missing docs tarball {}".format(path)
+        subprocess.run(
+            ["cabal", "upload", "-d", path],
+            check=True
+        )
