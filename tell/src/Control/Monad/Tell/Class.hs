@@ -42,7 +42,7 @@ import qualified Control.Monad.Writer.Class as Writer.Class
 
 @tell (a <> b) ≡ tell a *> tell b@
 
-== How does this related to 'MonadWriter'?
+== How does this relate to 'MonadWriter'?
 
 'MonadTell' is a generalisation of 'MonadWriter'. It only provides 'tell';
 a function that \'appends\' a monoidal value to some output. Morally, we have
